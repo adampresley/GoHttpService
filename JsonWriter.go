@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 )
 
 func WriteJson(writer http.ResponseWriter, object interface{}, code int) {
