@@ -95,6 +95,14 @@ func ParseJsonInBodySample(writer http.ResponseWriter, request *http.Request) {
 
 ```
 
+## Tests
+To run the tests open a terminal and execute the following.
+
+```bash
+$ go test -v
+```
+
+
 ## License
 The MIT License (MIT)
 
