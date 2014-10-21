@@ -90,7 +90,7 @@ result will be filled in with values from the parsed body
 */
 func ParseJsonInBodySample(writer http.ResponseWriter, request *http.Request) {
     result := Something{}
-    GoHttpService.ParseJsonBody(request, result)
+    GoHttpService.ParseJsonBody(request, &result)
 }
 
 ```
