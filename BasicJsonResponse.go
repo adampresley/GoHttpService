@@ -5,6 +5,9 @@ type BasicJsonResponse struct {
 	Message string `json:"message"`
 }
 
+/*
+Creates a new BasicJsonResponse structure.
+*/
 func NewBasicJsonResponse(success bool, message string) BasicJsonResponse {
 	return BasicJsonResponse{
 		Success: success,
