@@ -8,31 +8,42 @@ import (
 type Layout struct {
 	BaseDirectory     string
 	TemplateFileNames []string
-	RenderedTemplates *template.Template
+	TemplateBodies    map[string]string
 }
 
-func NewLayout(baseDirectory string, templateFileNames []string) (*Layout, error) {
-	result := &Layout{TemplateFileNames: templateFileNames}
-	t := template.New("layout")
+func NewLayout(baseDirectory string, templateFileNames []string) (Layout, error) {
+	result := Layout{TemplateFileNames: templateFileNames}
+	result.BaseDirectory = baseDirectory
+	result.TemplateBodies = make(map[string]string)
 
 	for _, templateName := range templateFileNames {
 		html, err := LoadHtml(baseDirectory + templateName)
 		if err != nil {
-			return &Layout{}, err
+			return result, err
 		}
 
-		t, err = t.Parse(string(html))
-		if err != nil {
-			return &Layout{}, err
-		}
+		result.TemplateBodies[templateName] = string(html)
 	}
 
-	result.BaseDirectory = baseDirectory
-	result.RenderedTemplates = t
 	return result, nil
 }
 
-func (this *Layout) RenderView(writer http.ResponseWriter, pageName string, data interface{}) error {
+func (this Layout) parseTemplates(body string, data interface{}) (*template.Template, error) {
+	t := template.New("layout")
+	var err error
+
+	for _, html := range this.TemplateBodies {
+		t, err = t.Parse(html)
+		if err != nil {
+			return t, err
+		}
+	}
+
+	t, err = t.Parse(body)
+	return t, nil
+}
+
+func (this Layout) RenderView(writer http.ResponseWriter, pageName string, data interface{}) error {
 	writer.Header().Set("Content-Type", "text/html; charset=UTF-8")
 
 	html, err := LoadHtml(this.BaseDirectory + pageName)
@@ -40,6 +51,10 @@ func (this *Layout) RenderView(writer http.ResponseWriter, pageName string, data
 		return err
 	}
 
-	t, _ := this.RenderedTemplates.Parse(string(html))
+	t, err := this.parseTemplates(string(html), data)
+	if err != nil {
+		return err
+	}
+
 	return t.Execute(writer, data)
 }
