@@ -25,6 +25,16 @@ func Error(writer http.ResponseWriter, message string) {
 }
 
 /*
+Convenience method sending our a BasicJsonResponse in JSON
+format with a success of FALSE. This will set the HTTP status
+code to 403. This is useful in telling a caller that some
+type of authentication failed.
+*/
+func Forbidden(writer http.ResponseWriter, message string) {
+	WriteJson(writer, NewBasicJsonResponse(false, message), 403)
+}
+
+/*
 Convenience method sending out a BasicJsonResponse in JSON
 format with a success of FALSE. This will set the HTTP status
 code to 404. This is useful in telling a caller that
