@@ -4,11 +4,13 @@ import (
 	"fmt"
 	"html/template"
 	"io/ioutil"
+	"log"
 	"net/http"
 )
 
 func LoadHtml(pageName string) ([]byte, error) {
 	fileName := pageName + ".html"
+	log.Println("INFO - Loading file", fileName)
 	return ioutil.ReadFile(fileName)
 }
 
@@ -18,7 +20,9 @@ func RenderHtml(writer http.ResponseWriter, pageName string) error {
 		return err
 	}
 
-	fmt.Fprint(writer, body)
+	writer.Header().Set("Content-Type", "text/html; charset=UTF-8")
+
+	fmt.Fprintf(writer, string(body))
 	return nil
 }
 
