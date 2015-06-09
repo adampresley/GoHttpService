@@ -1,6 +1,7 @@
 package GoHttpService
 
 import (
+	"errors"
 	"html/template"
 	"net/http"
 )
@@ -54,6 +55,10 @@ func (this Layout) RenderView(writer http.ResponseWriter, pageName string, data 
 	t, err := this.parseTemplates(string(html), data)
 	if err != nil {
 		return err
+	}
+
+	if t == nil {
+		return errors.New("Empty template: " + pageName)
 	}
 
 	return t.Execute(writer, data)
