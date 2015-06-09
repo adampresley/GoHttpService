@@ -45,6 +45,15 @@ func NotFound(writer http.ResponseWriter, message string) {
 }
 
 /*
+Convenience method for telling clients that a session has
+expired. This sends a SessionExpiredResponse structure and
+a status of 401 Unauthorized.
+*/
+func SessionExpired(writer http.ResponseWriter) {
+	WriteJson(writer, NewSessionExpiredResponse(), 401)
+}
+
+/*
 Convenience method sending out a BasicJsonResponse in JSON
 format with a success of TRUE. This will set the HTTP status
 code to 200.
